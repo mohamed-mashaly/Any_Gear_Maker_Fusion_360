@@ -70,7 +70,7 @@ def calcualtegear(m,n,al,s,fw,f,tw,fi,hd,kw,kh,oh,ch):
     if str(ch)== 'Taper Gear' or str(ch)== 'Helix Taper Gear' or str(ch)== 'Helix Gear' or str(ch)== 'Spur Gear':
         CreateTaberHelixGear(x,y,x2,y2,dd,da,fw,n,f,tw,xh,yh,zh,fi,hd,kw,kh,ch)
     if str(ch)== 'Internal Helix Gear' or str(ch)== 'Internal Spur Gear':
-        CreateExternalHelixGear(x,y,x2,y2,dd,da,fw,n,tw,xh,yh,zh,fi,oh,ch)
+        CreateInternalHelixGear(x,y,x2,y2,dd,da,fw,n,tw,xh,yh,zh,fi,oh,ch)
     
 
 
@@ -177,11 +177,16 @@ def CreateTaberHelixGear(x,y,x2,y2,dd,da,fw,n,f,tw,xh,yh,zh,fi,hd,kw,kh,ch):
             exinput=com.component.features.loftFeatures.createInput(1)
             exinput.loftSections.add(sk2.profiles.item(2))
             exinput.loftSections.add(sk22.profiles.item(2))
+            exinput.participantBodies=[com.component.bRepBodies.item(0)]
             if str(ch)== 'Helix Gear' or str(ch)== 'Helix Taper Gear':
                 exinput.centerLineOrRails.addRail(spl)
             loft=com.component.features.loftFeatures.add(exinput)
         if str(ch)== 'Spur Gear':
-            ext=com.component.features.extrudeFeatures.addSimple(sk2.profiles.item(2),adsk.core.ValueInput.createByReal(fw),1)
+            extinput=com.component.features.extrudeFeatures.createInput(sk2.profiles.item(2),1)
+            exten=adsk.fusion.DistanceExtentDefinition.create(adsk.core.ValueInput.createByReal(fw))
+            extinput.setOneSideExtent(exten,0)
+            extinput.participantBodies=[com.component.bRepBodies.item(0)]
+            ext=com.component.features.extrudeFeatures.add(extinput)
         #------------------------------------------------------------------------
         finput=com.component.features.filletFeatures.createInput()
         fe=adsk.core.ObjectCollection.create()
@@ -229,7 +234,7 @@ def CreateTaberHelixGear(x,y,x2,y2,dd,da,fw,n,f,tw,xh,yh,zh,fi,hd,kw,kh,ch):
         skh.isVisible=False
         #------------------------------------------------------------------------
 #------------------------------------------------------------------------
-def CreateExternalHelixGear(x,y,x2,y2,dd,da,fw,n,tw,xh,yh,zh,fi,oh,ch):
+def CreateInternalHelixGear(x,y,x2,y2,dd,da,fw,n,tw,xh,yh,zh,fi,oh,ch):
         app = adsk.core.Application.get()
         design=adsk.fusion.Design.cast(app.activeProduct)
         root=design.rootComponent
@@ -304,11 +309,16 @@ def CreateExternalHelixGear(x,y,x2,y2,dd,da,fw,n,tw,xh,yh,zh,fi,oh,ch):
             exinput=com.component.features.loftFeatures.createInput(0)
             exinput.loftSections.add(sk2.profiles.item(2))
             exinput.loftSections.add(sk22.profiles.item(2))
+            exinput.participantBodies=[com.component.bRepBodies.item(0)]
             if str(ch)== 'Internal Helix Gear':
                 exinput.centerLineOrRails.addRail(spl)
             loft=com.component.features.loftFeatures.add(exinput)
         if str(ch)== 'Internal Spur Gear':
-            ext=com.component.features.extrudeFeatures.addSimple(sk2.profiles.item(2),adsk.core.ValueInput.createByReal(fw),0)
+            extinput=com.component.features.extrudeFeatures.createInput(sk2.profiles.item(2),0)
+            exten=adsk.fusion.DistanceExtentDefinition.create(adsk.core.ValueInput.createByReal(fw))
+            extinput.setOneSideExtent(exten,0)
+            extinput.participantBodies=[com.component.bRepBodies.item(0)]
+            ext=com.component.features.extrudeFeatures.add(extinput)
         #------------------------------------------------------------------------
         finput=com.component.features.filletFeatures.createInput()
         fe=adsk.core.ObjectCollection.create()
